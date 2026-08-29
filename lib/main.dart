@@ -1,121 +1,292 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'models/study_module.dart';
+import 'screens/modules_screen.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void main() => runApp(const FocusApp());
 
-  // This widget is the root of your application.
+class FocusApp extends StatelessWidget {
+  const FocusApp({super.key});
+
   @override
   Widget build(BuildContext context) {
+    const seed = Color(0xFF315E51);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FOCUS',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: seed),
+        scaffoldBackgroundColor: const Color(0xFFF8FAF7),
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const WelcomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _titleController;
+  late final AnimationController _meaningController;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  @override
+  void initState() {
+    super.initState();
+    _titleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..forward();
+    _meaningController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 650),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) _meaningController.forward();
     });
   }
 
   @override
+  void dispose() {
+    _titleController.dispose();
+    _meaningController.dispose();
+    super.dispose();
+  }
+
+  void _enterFocus() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(builder: (_) => const FocusHomeScreen()),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: Icon(Icons.menu_book_rounded, color: colors.primary),
+              ),
+              const Spacer(flex: 3),
+              FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: _titleController,
+                  curve: Curves.easeOut,
+                ),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, .18),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: _titleController,
+                    curve: Curves.easeOutCubic,
+                  )),
+                  child: Text(
+                    'FOCUS',
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                          color: colors.primary,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 4,
+                        ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: _meaningController,
+                  curve: Curves.easeOut,
+                ),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, .12),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: _meaningController,
+                    curve: Curves.easeOutCubic,
+                  )),
+                  child: Text(
+                    'Focused Organization for Consistent Undergraduate Study.',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          height: 1.35,
+                          color: colors.onSurfaceVariant,
+                        ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: _meaningController,
+                  curve: Curves.easeOut,
+                ),
+                child: Text(
+                  'A calmer way to plan your study time and stay on track.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                ),
+              ),
+              const Spacer(flex: 4),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: _enterFocus,
+                  icon: const Icon(Icons.arrow_forward_rounded),
+                  label: const Text('Enter FOCUS'),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+class FocusHomeScreen extends StatefulWidget {
+  const FocusHomeScreen({super.key});
+
+  @override
+  State<FocusHomeScreen> createState() => _FocusHomeScreenState();
+}
+
+class _FocusHomeScreenState extends State<FocusHomeScreen> {
+  List<StudyModule> _modules = [];
+
+  Future<void> _openModules() async {
+    final modules = await Navigator.of(context).push<List<StudyModule>>(
+      MaterialPageRoute<List<StudyModule>>(
+        builder: (_) => ModulesScreen(initialModules: _modules),
+      ),
+    );
+    if (modules != null && mounted) setState(() => _modules = modules);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('FOCUS'),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: CircleAvatar(child: Icon(Icons.person_outline_rounded)),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        children: [
+          Text(
+            'Build a steady study rhythm.',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 24),
+          const _HomeSection(
+            title: "Today's Study",
+            description: 'Your study plan for today will appear here.',
+            icon: Icons.today_outlined,
+          ),
+          const SizedBox(height: 16),
+          const _HomeSection(
+            title: 'Upcoming Sessions',
+            description: 'Keep an eye on what is coming next.',
+            icon: Icons.event_note_outlined,
+          ),
+          const SizedBox(height: 16),
+          _HomeSection(
+            title: 'My Modules',
+            description: _modules.isEmpty
+                ? 'Add the subjects you are working through.'
+                : '${_modules.length} module${_modules.length == 1 ? '' : 's'} in your study plan.',
+            icon: Icons.auto_stories_outlined,
+            onTap: _openModules,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeSection extends StatelessWidget {
+  const _HomeSection({
+    required this.title,
+    required this.description,
+    required this.icon,
+    this.onTap,
+  });
+
+  final String title;
+  final String description;
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      elevation: 0,
+      color: colors.surfaceContainerLowest,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: colors.primaryContainer,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: colors.onPrimaryContainer),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: colors.onSurfaceVariant,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                Icon(Icons.chevron_right_rounded, color: colors.onSurfaceVariant),
+            ],
+          ),
+        ),
       ),
     );
   }
