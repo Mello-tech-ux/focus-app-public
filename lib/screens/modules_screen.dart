@@ -86,7 +86,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
           : ListView.separated(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               itemCount: _modules.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final module = _modules[index];
                 return _ModuleCard(
@@ -367,7 +367,7 @@ class _ModuleFormSheetState extends State<_ModuleFormSheet> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<ModuleDifficulty>(
-                  value: _difficulty,
+                  initialValue: _difficulty,
                   decoration: const InputDecoration(
                     labelText: 'Difficulty',
                     border: OutlineInputBorder(),
@@ -384,7 +384,7 @@ class _ModuleFormSheetState extends State<_ModuleFormSheet> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<ModulePriority>(
-                  value: _priority,
+                  initialValue: _priority,
                   decoration: const InputDecoration(
                     labelText: 'Priority',
                     border: OutlineInputBorder(),

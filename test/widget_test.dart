@@ -11,7 +11,7 @@ void main() {
 
     expect(find.text('FOCUS'), findsOneWidget);
     expect(find.text('Enter FOCUS'), findsOneWidget);
-  });
+ await tester.pump(const Duration(milliseconds: 500)); });
 
   testWidgets('shows a module card with key information',
       (WidgetTester tester) async {

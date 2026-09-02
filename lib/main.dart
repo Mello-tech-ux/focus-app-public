@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'models/availability_window.dart';
 import 'models/study_module.dart';
+import 'models/study_preferences.dart';
+import 'screens/availability_screen.dart';
 import 'screens/modules_screen.dart';
+import 'screens/study_preferences_screen.dart';
 
 void main() => runApp(const FocusApp());
 
@@ -35,6 +41,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
   late final AnimationController _titleController;
   late final AnimationController _meaningController;
+  Timer? _meaningRevealTimer;
 
   @override
   void initState() {
@@ -47,13 +54,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 650),
     );
-    Future<void>.delayed(const Duration(milliseconds: 500), () {
+    _meaningRevealTimer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) _meaningController.forward();
     });
   }
 
   @override
   void dispose() {
+    _meaningRevealTimer?.cancel();
     _titleController.dispose();
     _meaningController.dispose();
     super.dispose();
@@ -169,6 +177,8 @@ class FocusHomeScreen extends StatefulWidget {
 
 class _FocusHomeScreenState extends State<FocusHomeScreen> {
   List<StudyModule> _modules = [];
+  final List<AvailabilityWindow> _availability = [];
+  StudyPreferences _preferences = const StudyPreferences();
 
   Future<void> _openModules() async {
     final modules = await Navigator.of(context).push<List<StudyModule>>(
@@ -177,6 +187,24 @@ class _FocusHomeScreenState extends State<FocusHomeScreen> {
       ),
     );
     if (modules != null && mounted) setState(() => _modules = modules);
+  }
+
+  Future<void> _openAvailability() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => AvailabilityScreen(initialWindows: _availability),
+      ),
+    );
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _openPreferences() async {
+    final preferences = await Navigator.of(context).push<StudyPreferences>(
+      MaterialPageRoute<StudyPreferences>(
+        builder: (_) => StudyPreferencesScreen(initialPreferences: _preferences),
+      ),
+    );
+    if (preferences != null && mounted) setState(() => _preferences = preferences);
   }
 
   @override
@@ -220,6 +248,22 @@ class _FocusHomeScreenState extends State<FocusHomeScreen> {
                 : '${_modules.length} module${_modules.length == 1 ? '' : 's'} in your study plan.',
             icon: Icons.auto_stories_outlined,
             onTap: _openModules,
+          ),
+          const SizedBox(height: 16),
+          _HomeSection(
+            title: 'My Availability',
+            description: _availability.isEmpty
+                ? 'Set the times you are available to study.'
+                : '${_availability.length} availability window${_availability.length == 1 ? '' : 's'} configured.',
+            icon: Icons.schedule_outlined,
+            onTap: _openAvailability,
+          ),
+          const SizedBox(height: 16),
+          _HomeSection(
+            title: 'Study Preferences',
+            description: '${_preferences.preferredStudyPeriod.label} • ${_preferences.preferredSessionMinutes} min sessions',
+            icon: Icons.tune_outlined,
+            onTap: _openPreferences,
           ),
         ],
       ),
