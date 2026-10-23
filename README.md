@@ -1,4 +1,4 @@
-# 🎯 Task-Driven Focus App
+#  Task-Driven Focus App
 
 > A productivity tool designed to enforce a task-first workflow by linking application access to task completion.
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📌 Overview
+##  Overview
 
 Maintaining focus during study sessions can be difficult when digital distractions are a click away. Many traditional app blockers rely on simple timers that are easy to bypass.
 
@@ -16,7 +16,7 @@ The **Task-Driven Focus App** enforces a **reward-based focus mechanism**. Inste
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
 * **Task Management Interface:** Create, track, and manage study goals for active sessions.
 * **Completion Logic:** Validate task status before triggering focus rewards or session progression.
@@ -25,7 +25,7 @@ The **Task-Driven Focus App** enforces a **reward-based focus mechanism**. Inste
 
 ---
 
-## 🛠️ Tech Stack & Concepts
+##  Tech Stack & Concepts
 
 * **Languages:** JavaScript, HTML5, CSS3
 * **Logic & Architecture:** Event-driven logic, state management, task status validation
@@ -34,7 +34,7 @@ The **Task-Driven Focus App** enforces a **reward-based focus mechanism**. Inste
 
 ---
 
-## 🛣️ Features & Development Roadmap
+##  Features & Development Roadmap
 
 ### Completed / Core Build
 - [x] Initial UI layout and responsive design.
@@ -51,7 +51,7 @@ The **Task-Driven Focus App** enforces a **reward-based focus mechanism**. Inste
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
